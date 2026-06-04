@@ -1,11 +1,48 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
+// https://web3forms.com 에서 발급받은 access key
+const WEB3FORMS_ACCESS_KEY = "c411915f-4e05-46fb-a1fd-47633dacf29c";
+const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+
 export default function Contact() {
+  const [status, setStatus] = useState("idle"); // idle | sending | success | error
+
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("sending");
+
+    const payload = Object.fromEntries(new FormData(e.target).entries());
+    payload.access_key = WEB3FORMS_ACCESS_KEY;
+    payload.subject = "포트폴리오 Contact 폼 새 메시지";
+    payload.from_name = "Portfolio Contact Form";
+
+    try {
+      const res = await fetch(WEB3FORMS_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStatus("success");
+        e.target.reset();
+      } else {
+        setStatus("error");
+      }
+    } catch (err) {
+      setStatus("error");
+    }
+  };
+
   return (
     <div className="py-24 sm:py-32" id="contact">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -16,8 +53,7 @@ export default function Contact() {
           </p>
         </div>
         <form
-          action=""
-          method="POST"
+          onSubmit={handleSubmit}
           className="mx-auto mt-16 max-w-xl sm:mt-20"
           data-aos="zoom-in"
         >
@@ -96,10 +132,25 @@ export default function Contact() {
             </div>
           </div>
           <div className="mt-10">
-            <button type="submit" className="btn btn-outline text-sm w-full">
-              Send it
+            <button
+              type="submit"
+              disabled={status === "sending"}
+              className="btn btn-outline text-sm w-full"
+            >
+              {status === "sending" ? "Sending..." : "Send it"}
             </button>
           </div>
+
+          {status === "success" && (
+            <p className="mt-4 text-center text-sm text-success">
+              메시지가 성공적으로 전송되었습니다. 감사합니다! 🎉
+            </p>
+          )}
+          {status === "error" && (
+            <p className="mt-4 text-center text-sm text-error">
+              전송에 실패했습니다. 잠시 후 다시 시도해 주세요.
+            </p>
+          )}
         </form>
       </div>
     </div>
