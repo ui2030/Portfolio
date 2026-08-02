@@ -69,6 +69,9 @@ const projects = [
     id: 4,
     name: "실시간 화면 OCR 번역 (Cocktail)",
     imageSrc: process.env.PUBLIC_URL + "/cocktail.png",
+    detailImage: process.env.PUBLIC_URL + "/cocktail_metrics.png",
+    caption:
+      "영어 문서 위에 한국어 번역을 겹쳐 보여주는 실제 동작 화면입니다. 오른쪽은 처리 로그입니다.",
     badge: "단독 유지보수",
     period: "2024.06 ~ 현재",
     href: "https://github.com/ui2030/capstone_translate",
@@ -315,15 +318,29 @@ export default function Projects() {
                   </div>
                 </div>
               ) : (
-                <div className="mb-6">
+                <div className="mb-6 space-y-4">
                   {selected.imageSrc && (
+                    <figure>
+                      <img
+                        src={selected.imageSrc}
+                        alt={`${selected.name} 화면`}
+                        className="w-full rounded-xl border border-base-300 bg-base-200"
+                      />
+                      {selected.caption && (
+                        <figcaption className="mt-2 text-xs opacity-70">
+                          {selected.caption}
+                        </figcaption>
+                      )}
+                    </figure>
+                  )}
+                  {selected.detailImage && (
                     <img
-                      src={selected.imageSrc}
-                      alt={`${selected.name} 요약`}
+                      src={selected.detailImage}
+                      alt={`${selected.name} 성과 요약`}
                       className="w-full rounded-xl border border-base-300 bg-base-200"
                     />
                   )}
-                  <p className="mt-3 text-xs opacity-70">
+                  <p className="text-xs opacity-70">
                     발표자료가 따로 없는 프로젝트입니다. 코드와 측정 기록은 저장소에서 확인하실 수 있습니다.
                   </p>
                 </div>
