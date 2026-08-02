@@ -315,9 +315,18 @@ export default function Projects() {
                   </div>
                 </div>
               ) : (
-                <p className="mb-6 rounded-xl border border-base-300 bg-base-200 p-4 text-sm leading-6">
-                  발표자료가 따로 없는 개인 프로젝트입니다. 코드와 기록은 저장소에서 확인하실 수 있습니다.
-                </p>
+                <div className="mb-6">
+                  {selected.imageSrc && (
+                    <img
+                      src={selected.imageSrc}
+                      alt={`${selected.name} 요약`}
+                      className="w-full rounded-xl border border-base-300 bg-base-200"
+                    />
+                  )}
+                  <p className="mt-3 text-xs opacity-70">
+                    발표자료가 따로 없는 프로젝트입니다. 코드와 측정 기록은 저장소에서 확인하실 수 있습니다.
+                  </p>
+                </div>
               )}
 
               <section className="space-y-5 text-sm leading-6">
