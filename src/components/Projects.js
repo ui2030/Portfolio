@@ -6,29 +6,118 @@ import "aos/dist/aos.css";
 const projects = [
   {
     id: 1,
-    name: "AMR Safety Platform",
+    name: "AMR 위험 주행 사전 감지",
+    badge: "KDT 최우수상",
+    period: "2026.05 · 5인 팀",
     href: "https://github.com/ui2030/collision_detection",
     imageSrc: process.env.PUBLIC_URL + "/amr.png",
     pdf: process.env.PUBLIC_URL + "/amr_ppt.pdf",
-    used: "Python, YOLOv11, OpenCV, BoT-SORT",
+    pdfLabel: "AMR",
+    used: "Python, YOLO11n, BoT-SORT, OpenCV, Unity",
     description:
-      "Computer Vision으로 위험 주행 상황을 사전에 감지하는 자율주행 로봇(AMR) 안전 플랫폼.",
+      "지게차와 보행자의 충돌 위험을 몇 초 전에 알리는 시스템입니다. 사전학습 모델에 '지게차' 클래스가 없어 베이스라인조차 잡을 수 없는 상태에서 출발했습니다.",
+    role:
+      "학습 데이터 확보 방안 검증과 Unity 시뮬레이션 채택 주도, YOLO11n 파인튜닝, BoT-SORT 매칭 기준 조정, TTC 기반 위험도 공식 설계",
+    metrics: [
+      "검증셋 1,050객체 기준 재현율 1.00",
+      "위험 상황 누락 0건, 전체 탐지 mAP 0.92",
+      "보행자 F1 0.98 / 지게차 F1 0.94",
+    ],
   },
   {
     id: 2,
-    name: "Smartfarm Predictive Maintenance",
+    name: "스마트팜 양액펌프 막힘 사전 감지",
+    badge: "예지보전",
+    period: "2026.04 · 5인 팀",
     href: "https://github.com/ui2030/nutrient_pump_anomaly_detection",
     imageSrc: process.env.PUBLIC_URL + "/smartfarm.png",
     pdf: process.env.PUBLIC_URL + "/smartfarm_ppt.pdf",
-    used: "Python, PyTorch, AutoEncoder",
+    pdfLabel: "스마트팜",
+    used: "Python, TensorFlow/Keras, AutoEncoder, SHAP, Optuna",
     description:
-      "AutoEncoder 기반 이상 탐지로 스마트팜 양액펌프의 막힘을 사전에 감지하는 예지보전 프로젝트.",
+      "오탐이 운영 신뢰도를 떨어뜨리던 이상 탐지 시스템에서, 평가의 축을 바꿔 오탐이 어디서 나오는지 찾아낸 프로젝트입니다.",
+    role:
+      "평가 체계 설계(행 단위 F1에서 고장 이벤트 단위와 계통별 혼동행렬로 확장), 3단계 경보 임계값 산출, SHAP 시각화, 오탐 원인 귀속 분석",
+    metrics: [
+      "오탐의 94%가 단일 계통에 집중됨을 특정",
+      "오탐률 10.1% → 4.4%(−56%), 실제 이상 놓침 0건",
+      "정밀도 0.64 → 0.80, 이벤트 단위 F1 0.91",
+    ],
+  },
+  {
+    id: 3,
+    name: "한국어 의료 문장 STT 검증",
+    badge: "개인",
+    period: "2026.07",
+    href: "https://github.com/ui2030/-Whisper_Demo",
+    used: "Python, Whisper, CUDA/fp16, CER 측정",
+    description:
+      "진료 기록을 음성으로 입력하는 기술이 실제로 쓸 만한지 직접 재봤습니다. 측정 스크립트와 평가 문장, 결과 데이터를 모두 공개했습니다.",
+    role: "평가 문장 셋 구성, 로컬 GPU 추론, 문자 오류율(CER) 실측과 오류 유형 분석",
+    metrics: [
+      "16초 음성을 1.9초에 전사",
+      "약품명 20종 중 18종 오인식 확인",
+      "의료 용어 문장 오류율이 일반 문장의 1.7배",
+    ],
+  },
+  {
+    id: 4,
+    name: "실시간 화면 OCR 번역 (Cocktail)",
+    badge: "단독 유지보수",
+    period: "2024.06 ~ 현재",
+    href: "https://github.com/ui2030/capstone_translate",
+    used: "Python, PySide6, Tesseract, opus-mt, m2m100",
+    description:
+      "캡스톤에서 만든 500줄짜리 영역 번역 도구를, 트레이에 상주하며 화면을 읽어 번역하는 3,000줄 규모 도구로 키웠습니다.",
+    role:
+      "졸업 후 단독 유지보수 — 로그로 병목 추적, 다국어 확장, 결함 문서화와 회귀 검사 체계 구축",
+    metrics: [
+      "화면 한 번 처리 27초 → 약 2초",
+      "영어 한 방향에서 여섯 개 언어 인식으로 확장",
+      "스모크 테스트 30여 건을 통과해야 변경 반영",
+    ],
+  },
+  {
+    id: 5,
+    name: "LLM 데스크톱 비서 (Apia)",
+    badge: "개인 · 진행 중",
+    period: "2026.05 ~ 현재",
+    href: "https://github.com/ui2030/Apia",
+    used: "Electron, FastAPI, 로컬 LLM(Qwen), MCP, Edge-TTS",
+    description:
+      "로컬 모델과 클라우드 모델을 역할에 따라 나눠 쓰는 데스크톱 비서입니다. 개인 데이터가 기기 밖으로 나가지 않도록 로컬을 우선해 설계했습니다.",
+    role:
+      "서비스 전체 구조 설계, AI 에이전트 분업 체계 설계(기획·구현·검증 모델 분리)와 수용 기준 정의, 최종 검증",
+    metrics: [
+      "150여 커밋 규모의 지속 개발",
+      "작업 규칙, 검증 명령, 회귀 이력을 문서로 운영",
+      "LLM 출력을 JSON으로 구조화해 자율 행동에 사용",
+    ],
+  },
+  {
+    id: 6,
+    name: "Home_Spot 부동산 전월세 플랫폼",
+    badge: "데이터 파트 리드",
+    period: "2025.09 · 5인 팀",
+    href: "https://github.com/ui2030/Home_Spot",
+    used: "MySQL, Node.js, Ollama(Qwen 2.5 3B), SSE",
+    description:
+      "매물을 믿을 수 있는가, 궁금한 점을 바로 물어볼 수 있는가. 이 두 가지를 팀의 문제로 제안하고 데이터와 상담 챗봇을 맡았습니다.",
+    role:
+      "문제 정의 제안, 매물·회원 스키마 설계, 공공 실거래 자료 기반 데이터 전처리, 전세 상담 챗봇 개발",
+    metrics: [
+      "상담 범위를 프롬프트와 서버 필터로 이중 통제",
+      "거래 유형별 필수 항목을 규칙화해 표기 통일",
+      "응답 스트리밍과 세션별 대화 20턴 유지",
+    ],
   },
 ];
 
+const withPdf = projects.filter((project) => project.pdf);
+
 export default function Projects() {
   useEffect(() => {
-    AOS.init({ duration: 2000 });
+    AOS.init({ duration: 1200, once: true });
   }, []);
   return (
     <div id="projects">
@@ -37,31 +126,73 @@ export default function Projects() {
         <p className="mt-2 text-4xl font-bold tracking-tight sm:text-6xl">
           Projects
         </p>
-        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+        <p className="mt-4 text-sm opacity-80">
+          팀 프로젝트는 제가 맡은 부분을 구분해 적었고, 성과는 측정한 값만 표기했습니다.
+        </p>
+
+        <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
           {projects.map((project) => (
             <div
               key={project.id}
-              className="group relative ring-2 ring-base-300 bg-base-200 rounded-2xl shadow-xl"
-              data-aos="flip-left"
+              className="group flex flex-col text-left ring-2 ring-base-300 bg-base-200 rounded-2xl shadow-xl overflow-hidden"
+              data-aos="fade-up"
             >
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md lg:aspect-none group-hover:brightness-75 duration-300 delay-100 lg:h-80 rounded-t-2xl ">
-                <img
-                  src={project.imageSrc}
-                  alt={project.name}
-                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                />
-              </div>
-              <div className="mt-4 flex justify-between p-4">
-                <div className="p-4">
-                  <h3 className="text-lg font-bold">
-                    <a href={project.href} target="_blank" rel="noopener noreferrer">
-                      <span aria-hidden="true" className="absolute inset-0" />
-                      {project.name}
-                    </a>
-                  </h3>
-                  <p className="mt-1 mb-5 text-sm">{project.description}</p>
-                  <p className="text-sm font-medium">{project.used}</p>
+              {project.imageSrc ? (
+                <div className="h-48 w-full overflow-hidden group-hover:brightness-75 duration-300">
+                  <img
+                    src={project.imageSrc}
+                    alt={project.name}
+                    className="h-full w-full object-cover object-center"
+                  />
                 </div>
+              ) : (
+                <div className="h-48 w-full flex items-center justify-center bg-gradient-to-br from-base-300 to-base-100">
+                  <span className="px-6 text-center text-2xl font-bold tracking-tight opacity-40">
+                    {project.name}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex flex-1 flex-col p-6">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="badge badge-outline badge-sm">
+                    {project.badge}
+                  </span>
+                  <span className="text-xs opacity-70">{project.period}</span>
+                </div>
+
+                <h3 className="mt-3 text-lg font-bold">
+                  <a
+                    href={project.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    {project.name}
+                  </a>
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 opacity-90">
+                  {project.description}
+                </p>
+
+                <p className="mt-4 text-sm leading-6">
+                  <span className="font-semibold">담당 </span>
+                  {project.role}
+                </p>
+
+                <ul className="mt-4 space-y-1 text-sm">
+                  {project.metrics.map((metric) => (
+                    <li key={metric} className="flex gap-2">
+                      <span aria-hidden="true">·</span>
+                      <span>{metric}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="mt-auto pt-4 text-xs font-medium opacity-80">
+                  {project.used}
+                </p>
               </div>
             </div>
           ))}
@@ -70,10 +201,10 @@ export default function Projects() {
         <div className="mt-16" data-aos="fade-up">
           <h3 className="text-2xl font-bold tracking-tight">프로젝트 발표자료</h3>
           <p className="mt-2 text-sm">
-            각 프로젝트의 발표 PPT를 PDF로 다운로드할 수 있습니다.
+            팀 프로젝트의 발표 PPT를 PDF로 내려받을 수 있습니다.
           </p>
           <div className="mt-6 flex flex-col items-stretch justify-center gap-4 sm:flex-row">
-            {projects.map((project) => (
+            {withPdf.map((project) => (
               <a
                 key={project.id}
                 href={project.pdf}
@@ -81,7 +212,7 @@ export default function Projects() {
                 className="btn btn-outline gap-2"
               >
                 <ArrowDownTrayIcon className="h-5 w-5" aria-hidden="true" />
-                {project.name} PPT
+                {project.pdfLabel} 발표자료
               </a>
             ))}
           </div>
