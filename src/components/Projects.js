@@ -1,5 +1,9 @@
-import { useEffect } from "react";
-import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
+import {
+  ArrowDownTrayIcon,
+  ArrowTopRightOnSquareIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -113,12 +117,26 @@ const projects = [
   },
 ];
 
-const withPdf = projects.filter((project) => project.pdf);
-
 export default function Projects() {
+  const [selected, setSelected] = useState(null);
+
   useEffect(() => {
     AOS.init({ duration: 1200, once: true });
   }, []);
+
+  useEffect(() => {
+    if (!selected) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setSelected(null);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [selected]);
+
   return (
     <div id="projects">
       <div className="mx-auto text-center max-w-2xl px-6 py-24 sm:px-6 sm:py-32 lg:max-w-7xl lg:px-8">
@@ -129,12 +147,25 @@ export default function Projects() {
         <p className="mt-4 text-sm opacity-80">
           팀 프로젝트는 제가 맡은 부분을 구분해 적었고, 성과는 측정한 값만 표기했습니다.
         </p>
+        <p className="mt-1 text-sm opacity-70">
+          카드를 클릭하면 발표자료와 상세 설명이 열립니다.
+        </p>
 
         <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
           {projects.map((project) => (
             <div
               key={project.id}
-              className="group flex flex-col text-left ring-2 ring-base-300 bg-base-200 rounded-2xl shadow-xl overflow-hidden"
+              role="button"
+              tabIndex={0}
+              aria-label={`${project.name} 상세 보기`}
+              onClick={() => setSelected(project)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setSelected(project);
+                }
+              }}
+              className="group flex cursor-pointer flex-col text-left ring-2 ring-base-300 bg-base-200 rounded-2xl shadow-xl overflow-hidden transition duration-200 hover:ring-primary hover:-translate-y-1 focus:outline-none focus-visible:ring-primary"
               data-aos="fade-up"
             >
               {project.imageSrc ? (
@@ -161,16 +192,7 @@ export default function Projects() {
                   <span className="text-xs opacity-70">{project.period}</span>
                 </div>
 
-                <h3 className="mt-3 text-lg font-bold">
-                  <a
-                    href={project.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline"
-                  >
-                    {project.name}
-                  </a>
-                </h3>
+                <h3 className="mt-3 text-lg font-bold">{project.name}</h3>
 
                 <p className="mt-2 text-sm leading-6 opacity-90">
                   {project.description}
@@ -193,42 +215,148 @@ export default function Projects() {
                 <p className="mt-auto pt-4 text-xs font-medium opacity-80">
                   {project.used}
                 </p>
+
+                <p className="mt-3 text-xs font-semibold opacity-70">
+                  {project.pdf ? "클릭하면 발표자료가 열립니다" : "클릭하면 상세 설명이 열립니다"}
+                </p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-16" data-aos="fade-up">
-          <h3 className="text-2xl font-bold tracking-tight">프로젝트 발표자료</h3>
-          <p className="mt-2 text-sm">
-            팀 프로젝트의 발표 PPT를 PDF로 내려받을 수 있습니다.
-          </p>
-          <div className="mt-6 flex flex-col items-stretch justify-center gap-4 sm:flex-row">
-            {withPdf.map((project) => (
-              <a
-                key={project.id}
-                href={project.pdf}
-                download
-                className="btn btn-outline gap-2"
-              >
-                <ArrowDownTrayIcon className="h-5 w-5" aria-hidden="true" />
-                {project.pdfLabel} 발표자료
-              </a>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-16 flex justify-center">
+        <div className="mt-16 flex flex-col items-center gap-3">
           <a
             href="https://github.com/ui2030"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-outline"
+            className="btn btn-outline w-64 gap-2"
           >
-            View More
+            <ArrowTopRightOnSquareIcon className="h-5 w-5" aria-hidden="true" />
+            GitHub 저장소 보기
+          </a>
+          <a
+            href="https://www.youtube.com/@%EA%B9%80%EC%B2%9C%EC%9D%98%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-outline w-64 gap-2"
+          >
+            <ArrowTopRightOnSquareIcon className="h-5 w-5" aria-hidden="true" />
+            프로젝트 시연 영상 보기
           </a>
         </div>
       </div>
+
+      {selected && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setSelected(null)}
+            aria-hidden="true"
+          />
+          <aside
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${selected.name} 상세`}
+            className="relative flex h-full w-full max-w-3xl flex-col bg-base-100 shadow-2xl"
+          >
+            <header className="flex items-start justify-between gap-4 border-b border-base-300 p-5">
+              <div className="text-left">
+                <div className="flex items-center gap-2">
+                  <span className="badge badge-outline badge-sm">
+                    {selected.badge}
+                  </span>
+                  <span className="text-xs opacity-70">{selected.period}</span>
+                </div>
+                <h3 className="mt-2 text-xl font-bold">{selected.name}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelected(null)}
+                className="btn btn-ghost btn-sm btn-circle"
+                aria-label="닫기"
+              >
+                <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+              </button>
+            </header>
+
+            <div className="flex-1 overflow-y-auto p-5 text-left">
+              {selected.pdf ? (
+                <div className="mb-6">
+                  <iframe
+                    src={`${selected.pdf}#view=FitH`}
+                    title={`${selected.name} 발표자료`}
+                    className="h-[26rem] w-full rounded-xl border border-base-300 bg-base-200 sm:h-[32rem]"
+                  />
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <a
+                      href={selected.pdf}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-sm btn-outline gap-2"
+                    >
+                      <ArrowTopRightOnSquareIcon
+                        className="h-4 w-4"
+                        aria-hidden="true"
+                      />
+                      새 탭에서 크게 보기
+                    </a>
+                    <a
+                      href={selected.pdf}
+                      download
+                      className="btn btn-sm btn-outline gap-2"
+                    >
+                      <ArrowDownTrayIcon className="h-4 w-4" aria-hidden="true" />
+                      발표자료 내려받기
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <p className="mb-6 rounded-xl border border-base-300 bg-base-200 p-4 text-sm leading-6">
+                  발표자료가 따로 없는 개인 프로젝트입니다. 코드와 기록은 저장소에서 확인하실 수 있습니다.
+                </p>
+              )}
+
+              <section className="space-y-5 text-sm leading-6">
+                <div>
+                  <h4 className="font-bold">프로젝트 개요</h4>
+                  <p className="mt-1 opacity-90">{selected.description}</p>
+                </div>
+                <div>
+                  <h4 className="font-bold">담당</h4>
+                  <p className="mt-1 opacity-90">{selected.role}</p>
+                </div>
+                <div>
+                  <h4 className="font-bold">성과</h4>
+                  <ul className="mt-1 space-y-1">
+                    {selected.metrics.map((metric) => (
+                      <li key={metric} className="flex gap-2">
+                        <span aria-hidden="true">·</span>
+                        <span>{metric}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold">사용 기술</h4>
+                  <p className="mt-1 opacity-90">{selected.used}</p>
+                </div>
+              </section>
+            </div>
+
+            <footer className="border-t border-base-300 p-5">
+              <a
+                href={selected.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline btn-sm gap-2"
+              >
+                <ArrowTopRightOnSquareIcon className="h-4 w-4" aria-hidden="true" />
+                GitHub 저장소 열기
+              </a>
+            </footer>
+          </aside>
+        </div>
+      )}
     </div>
   );
 }
