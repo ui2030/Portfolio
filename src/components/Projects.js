@@ -51,6 +51,7 @@ const projects = [
   {
     id: 3,
     name: "한국어 의료 문장 STT 검증",
+    imageSrc: process.env.PUBLIC_URL + "/whisper.png",
     badge: "개인",
     period: "2026.07",
     href: "https://github.com/ui2030/-Whisper_Demo",
@@ -67,6 +68,7 @@ const projects = [
   {
     id: 4,
     name: "실시간 화면 OCR 번역 (Cocktail)",
+    imageSrc: process.env.PUBLIC_URL + "/cocktail.png",
     badge: "단독 유지보수",
     period: "2024.06 ~ 현재",
     href: "https://github.com/ui2030/capstone_translate",
@@ -84,6 +86,7 @@ const projects = [
   {
     id: 5,
     name: "LLM 데스크톱 비서 (Apia)",
+    imageSrc: process.env.PUBLIC_URL + "/apia.png",
     badge: "개인 · 진행 중",
     period: "2026.05 ~ 현재",
     href: "https://github.com/ui2030/Apia",
@@ -101,6 +104,7 @@ const projects = [
   {
     id: 6,
     name: "Home_Spot 부동산 전월세 플랫폼",
+    imageSrc: process.env.PUBLIC_URL + "/homespot.png",
     badge: "데이터 파트 리드",
     period: "2025.09 · 5인 팀",
     href: "https://github.com/ui2030/Home_Spot",
